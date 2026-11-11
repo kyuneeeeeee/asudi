@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7fb">
+  <title>문의 관리 | 안산도시개발(주) 고객지원팀 설비과</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: #242231;
+      background: #f8f7fb;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --ink: #242231;
+      --muted: #777486;
+      --line: #eeecf3;
+      --purple: #7254d6;
+      --purple-dark: #5b42b5;
+      --lavender: #f2edff;
+      --urgent: #a9483d;
+      --urgent-bg: #fff0ed;
+      --surface: rgba(255, 255, 255, .94);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; min-height: 100vh; }
+    button, input, textarea, select { font: inherit; }
+    button, select { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(114, 84, 214, .35);
+      outline-offset: 2px;
+    }
+    .page { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 52px 0 72px; }
+    .masthead { display: flex; align-items: center; gap: 14px; margin-bottom: 38px; }
+    .brand-logo { display: block; width: 180px; max-width: 100%; height: auto; object-fit: contain; }
+    .brand-name { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
+    .brand-caption { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .intro { margin-bottom: 26px; }
+    .eyebrow { margin: 0 0 9px; color: var(--purple); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+    h1 { margin: 0; font-size: clamp(27px, 4vw, 36px); letter-spacing: -.055em; }
+    .intro-copy { margin: 9px 0 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+    .dashboard { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 22px; }
+    .workspace { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: start; gap: 22px; }
+    .side-menu { position: sticky; top: 20px; display: grid; gap: 7px; padding: 10px; border: 1px solid #eeecf3; border-radius: 16px; background: rgba(255,255,255,.78); }
+    .menu-button { min-height: 42px; padding: 9px 12px; border: 0; border-radius: 10px; color: #716d7b; background: transparent; text-align: left; font-size: 13px; font-weight: 750; }
+    .menu-button[aria-current="page"] { color: var(--purple-dark); background: var(--lavender); }
+    .view-panel[hidden] { display: none; }
+    .filter-row { display: flex; align-items: center; gap: 10px; margin: -5px 0 15px; }
+    .filter-row .control { max-width: 240px; }
+    .filter-hint { color: var(--muted); font-size: 12px; }
+    .frame-card { position: relative; isolation: isolate; min-width: 0; padding: 1px; border-radius: 20px; }
+    .frame-card::before {
+      position: absolute; z-index: -1; inset: -1px; border-radius: inherit; padding: 1px; content: "";
+      background: linear-gradient(135deg, #ffeea5, #be96ff, #ffeea5);
+      background-size: 220% 220%; animation: frame-flow 9s ease-in-out infinite;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+    }
+    .frame-card::after {
+      position: absolute; z-index: -2; inset: 3px; border-radius: inherit; content: "";
+      box-shadow: 0 8px 34px rgba(147, 113, 219, .11), 0 0 42px rgba(255, 238, 165, .23);
+      pointer-events: none;
+    }
+    @keyframes frame-flow { 0%, 100% { background-position: 0% 40%; } 50% { background-position: 100% 60%; } }
+    .card-inner { min-height: 100%; padding: 25px; border-radius: 19px; background: var(--surface); backdrop-filter: blur(12px); }
+    .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+    .section-title { margin: 0; font-size: 18px; letter-spacing: -.035em; }
+    .section-description { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .count-badge { flex: 0 0 auto; padding: 7px 10px; border: 1px solid #eee9fc; border-radius: 999px; color: var(--purple-dark); background: #f7f4ff; font-size: 12px; font-weight: 750; }
+    .field { display: grid; gap: 8px; margin-bottom: 17px; }
+    #inquiry-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 16px; }
+    #inquiry-form .form-field-wide, #inquiry-form .primary-button { grid-column: 1 / -1; }
+    .field-label { color: #494657; font-size: 12px; font-weight: 750; }
+    .control { width: 100%; min-width: 0; min-height: 45px; padding: 11px 12px; border: 1px solid #e8e5ef; border-radius: 11px; color: var(--ink); background: #fff; transition: border-color .18s, box-shadow .18s; }
+    .control::placeholder { color: #aaa7b5; }
+    .control:focus { border-color: #ad9ae9; box-shadow: 0 0 0 3px #eee9ff; outline: 0; }
+    textarea.control { min-height: 124px; resize: vertical; line-height: 1.55; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .urgent-toggle { display: flex; min-height: 45px; align-items: center; gap: 9px; padding: 0 11px; border: 1px solid #e8e5ef; border-radius: 11px; color: #514e5c; background: #fff; font-size: 13px; }
+    .urgent-toggle input { width: 17px; height: 17px; margin: 0; accent-color: var(--purple); }
+    .primary-button { width: 100%; min-height: 48px; margin-top: 3px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(135deg, #8269df, #674bc6); box-shadow: 0 8px 18px #7254d633; font-size: 14px; font-weight: 800; transition: transform .16s, box-shadow .16s; }
+    .primary-button:hover { transform: translateY(-1px); box-shadow: 0 11px 22px #7254d644; }
+    .list-card .card-inner { padding: 25px 25px 12px; }
+    .inquiry-list { display: grid; }
+    .inquiry-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 15px; padding: 19px 0; border-top: 1px solid var(--line); }
+    .inquiry-main { min-width: 0; }
+    .inquiry-topline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .customer-name { font-size: 17px; font-weight: 800; }
+    .channel-tag { padding: 5px 9px; border-radius: 999px; color: #696576; background: #f3f2f6; font-size: 13px; font-weight: 700; }
+    .urgent-tag { padding: 5px 9px; border-radius: 999px; color: var(--urgent); background: var(--urgent-bg); font-size: 13px; font-weight: 800; }
+    .contact-line { margin: 6px 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .inquiry-content { margin: 0; color: #45424f; font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; }
+    .inquiry-times { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .inquiry-time strong { color: #5f5b69; font-weight: 750; }
+    .inquiry-actions { display: flex; align-items: center; gap: 8px; }
+    .status-select { min-width: 112px; min-height: 39px; padding: 8px 28px 8px 10px; border: 1px solid #e8e5ef; border-radius: 10px; color: #504c5b; background: #fff; font-size: 12px; }
+    .datetime-control { display: grid; grid-template-columns: minmax(0, 1fr) 72px 72px; gap: 6px; }
+    .date-priority-row { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) 210px; align-items: start; gap: 16px; }
+    .delete-button { min-width: 40px; min-height: 40px; border: 1px solid #eeeaf2; border-radius: 10px; color: #817d8b; background: #fff; font-size: 12px; font-weight: 750; }
+    .delete-button:hover { border-color: #f0cbc6; color: var(--urgent); background: #fff8f7; }
+    .empty-state { padding: 50px 16px 56px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; }
+    .empty-icon { display: grid; width: 48px; height: 48px; margin: 0 auto 14px; place-items: center; border-radius: 16px; color: var(--purple); background: var(--lavender); font-size: 22px; }
+    .empty-state p { margin: 0; font-size: 14px; line-height: 1.7; }
+    .storage-note { margin: 16px 2px 0; color: #8e8a98; font-size: 11px; line-height: 1.5; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 32px, 560px); padding-top: 30px; }
+      .masthead { margin-bottom: 29px; }
+      .workspace { grid-template-columns: 1fr; gap: 14px; }
+      .side-menu { position: static; display: flex; padding: 6px; }
+      .menu-button { flex: 1; text-align: center; }
+      .dashboard { grid-template-columns: 1fr; gap: 18px; }
+      #inquiry-form { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; }
+      .card-inner { padding: 22px; }
+      .list-card .card-inner { padding: 22px 22px 10px; }
+    }
+    @media (max-width: 480px) {
+      .page { width: calc(100% - 24px); padding-top: 22px; }
+      .intro-copy { font-size: 14px; }
+      .card-inner, .list-card .card-inner { padding-right: 17px; padding-left: 17px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      #inquiry-form { grid-template-columns: 1fr; }
+      #inquiry-form .form-field-wide, #inquiry-form .primary-button { grid-column: auto; }
+      .date-priority-row { grid-template-columns: 1fr; gap: 0; }
+      .datetime-control { grid-template-columns: minmax(0, 1fr) 72px 72px; }
+      .inquiry-item { grid-template-columns: 1fr; gap: 12px; }
+      .inquiry-actions { justify-content: space-between; }
+      .status-select { flex: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <img class="brand-logo" src="assets/asudi-logo.png" alt="안산도시개발 주식회사 로고">
+      <div>
+        <p class="brand-name">안산도시개발(주) 고객지원팀 설비과</p>
+        <p class="brand-caption">고객 문의를 한곳에서 관리해요</p>
+      </div>
+    </header>
+
+    <main>
+      <div class="workspace">
+        <nav class="side-menu" aria-label="주요 메뉴">
+          <button class="menu-button" type="button" data-view="register" aria-current="page">문의 등록</button>
+          <button class="menu-button" type="button" data-view="list" aria-current="false">문의 목록</button>
+        </nav>
+        <div class="workspace-content">
+          <div class="intro">
+            <p class="eyebrow">CUSTOMER CARE</p>
+            <h1 id="page-title">문의 등록</h1>
+            <p class="intro-copy" id="page-description">접수 내용을 입력해 문의를 등록해 주세요.</p>
+            <p class="intro-copy" id="connection-status" role="status"></p>
+            <button class="delete-button" id="retry-connection" type="button" hidden>다시 연결</button>
+          </div>
+
+          <section class="view-panel" id="register-view" data-view-panel="register">
+          <div class="dashboard">
+            <section class="frame-card" aria-labelledby="form-title">
+          <div class="card-inner">
+            <div class="section-heading">
+              <div>
+                <h2 class="section-title" id="form-title">문의 등록</h2>
+                <p class="section-description">새로 접수된 문의를 기록해 주세요.</p>
+              </div>
+            </div>
+            <form id="inquiry-form">
+              <div class="field">
+                <label class="field-label" for="customer-name">고객명</label>
+                <input class="control" id="customer-name" name="customerName" type="text" maxlength="60" placeholder="예: 김민지" required>
+              </div>
+              <div class="field">
+                <label class="field-label" for="customer-contact">연락처</label>
+                <input class="control" id="customer-contact" name="contact" type="tel" maxlength="40" placeholder="예: 010-1234-5678" required>
+              </div>
+              <div class="field">
+                <label class="field-label" for="district">열사용자 지구</label>
+                <select class="control" id="district" name="district" required>
+                  <option value="" selected disabled>지구를 선택해 주세요</option>
+                  <option value="안산">안산</option>
+                  <option value="배곧">배곧</option>
+                  <option value="송산">송산</option>
+                  <option value="거북섬">거북섬</option>
+                  <option value="반달섬">반달섬</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label" for="category">분류</label>
+                <select class="control" id="category" name="category" required>
+                  <option value="난방">난방</option>
+                  <option value="급탕">급탕</option>
+                  <option value="밸브">밸브</option>
+                  <option value="배관">배관</option>
+                  <option value="펌프">펌프</option>
+                  <option value="자동제어">자동제어</option>
+                  <option value="교육">교육</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              <div class="date-priority-row">
+                <div class="field">
+                  <span class="field-label">접수 날짜 및 시간</span>
+                  <div class="datetime-control">
+                    <input class="control" id="received-date" name="receivedDate" type="date" aria-label="접수 날짜">
+                    <select class="control" id="received-hour" name="receivedHour" aria-label="접수 시각, 시"></select>
+                    <select class="control" id="received-minute" name="receivedMinute" aria-label="접수 시각, 분"></select>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="field-label">우선순위</span>
+                  <label class="urgent-toggle" for="urgent">
+                    <input id="urgent" name="urgent" type="checkbox">
+                    <span>긴급 문의로 표시</span>
+                  </label>
+                </div>
+              </div>
+              <div class="field form-field-wide">
+                <label class="field-label" for="inquiry-content">문의 내용</label>
+                <textarea class="control" id="inquiry-content" name="content" maxlength="1000" placeholder="문의 내용을 입력해 주세요." required></textarea>
+              </div>
+              <button class="primary-button" type="submit">문의 등록하기</button>
+            </form>
+          </div>
+            </section>
+          </div>
+          </section>
+
+          <section class="view-panel" id="list-view" data-view-panel="list" hidden>
+          <div class="dashboard">
+          <section class="frame-card list-card" aria-labelledby="list-title">
+          <div class="card-inner">
+            <div class="section-heading">
+              <div>
+                <h2 class="section-title" id="list-title">문의 목록</h2>
+                <p class="section-description">담당 문의를 확인하고 처리 상태를 업데이트하세요.</p>
+              </div>
+              <span class="count-badge" id="inquiry-count" aria-live="polite">문의 0건</span>
+            </div>
+            <div class="filter-row">
+              <label class="sr-only" for="category-filter">분류 검색</label>
+              <select class="control" id="category-filter">
+                <option value="전체">전체 분류</option>
+                <option value="난방">난방</option>
+                <option value="급탕">급탕</option>
+                <option value="밸브">밸브</option>
+                <option value="배관">배관</option>
+                <option value="펌프">펌프</option>
+                <option value="자동제어">자동제어</option>
+                <option value="교육">교육</option>
+                <option value="기타">기타</option>
+              </select>
+              <span class="filter-hint" id="filter-hint">분류를 선택해 해당 문의만 확인하세요.</span>
+            </div>
+            <div class="inquiry-list" id="inquiry-list" aria-live="polite"></div>
+            <div class="storage-note">문의는 Supabase에 저장됩니다. 가상 데이터만 입력해 주세요.</div>
+          </div>
+        </section>
+          </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const SUPABASE_URL = "https://ssiqydwuwsjssgreqfgz.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_cSikUgnX6vpK_aMcXL7B-w_72-Fweqo";
+      const TABLE_URL = `${SUPABASE_URL}/rest/v1/inquiries`;
+      const STATUS_OPTIONS = ["미처리", "처리 중", "답변 완료"];
+      const listElement = document.getElementById("inquiry-list");
+      const countElement = document.getElementById("inquiry-count");
+      const formElement = document.getElementById("inquiry-form");
+      const submitButton = formElement.querySelector('button[type="submit"]');
+      const connectionStatus = document.getElementById("connection-status");
+      const retryConnection = document.getElementById("retry-connection");
+      const contactInput = document.getElementById("customer-contact");
+      const categoryFilter = document.getElementById("category-filter");
+      const pageTitle = document.getElementById("page-title");
+      const pageDescription = document.getElementById("page-description");
+      const viewPanels = [...document.querySelectorAll("[data-view-panel]")];
+      const viewButtons = [...document.querySelectorAll("[data-view]")];
+      const hourSelect = document.getElementById("received-hour");
+      const minuteSelect = document.getElementById("received-minute");
+
+      const hourPlaceholder = new Option("시", "");
+      hourSelect.append(hourPlaceholder);
+      for (let hour = 0; hour < 24; hour += 1) {
+        const value = String(hour).padStart(2, "0");
+        hourSelect.append(new Option(value, value));
+      }
+      minuteSelect.append(new Option("분", ""));
+      for (let minute = 0; minute < 60; minute += 1) {
+        const value = String(minute).padStart(2, "0");
+        minuteSelect.append(new Option(value, value));
+      }
+
+      contactInput.addEventListener("input", () => {
+        const digits = contactInput.value.replace(/\D/g, "").slice(0, 11);
+        let formatted = digits;
+        if (digits.startsWith("02")) {
+          const middleLength = digits.length <= 9 ? 3 : 4;
+          if (digits.length > 2 && digits.length <= 2 + middleLength) formatted = `${digits.slice(0, 2)}-${digits.slice(2)}`;
+          else if (digits.length > 2 + middleLength) formatted = `${digits.slice(0, 2)}-${digits.slice(2, 2 + middleLength)}-${digits.slice(2 + middleLength)}`;
+        } else if (digits.length <= 3) {
+          formatted = digits;
+        } else if (digits.length <= 7) {
+          formatted = `${digits.slice(0, 3)}-${digits.slice(3)}`;
+        } else {
+          const middleLength = digits.length <= 10 ? 3 : 4;
+          formatted = `${digits.slice(0, 3)}-${digits.slice(3, 3 + middleLength)}-${digits.slice(3 + middleLength)}`;
+        }
+        contactInput.value = formatted;
+      });
+
+      function showView(view) {
+        viewPanels.forEach((panel) => { panel.hidden = panel.dataset.viewPanel !== view; });
+        viewButtons.forEach((button) => {
+          button.setAttribute("aria-current", button.dataset.view === view ? "page" : "false");
+        });
+        pageTitle.textContent = view === "register" ? "문의 등록" : "문의 목록";
+        pageDescription.textContent = view === "register"
+          ? "접수 내용을 입력해 문의를 등록해 주세요."
+          : "분류를 검색해 문의를 확인하고 처리 상태를 관리하세요.";
+        if (view === "list") render();
+      }
+
+      viewButtons.forEach((button) => {
+        button.addEventListener("click", () => showView(button.dataset.view));
+      });
+
+      function validInquiry(item) {
+        return item && typeof item === "object" &&
+          typeof item.customerName === "string" &&
+          typeof item.content === "string" &&
+          typeof item.urgent === "boolean" &&
+          STATUS_OPTIONS.includes(item.status);
+      }
+
+      function normalize(items) {
+        return items.filter((item) => validInquiry(item) && item.id != null).map((item) => ({
+          id: String(item.id),
+          customerName: item.customerName,
+          contact: item.contact || "연락처 미등록",
+          district: item.district || "지구 미지정",
+          category: item.category === "온수" ? "급탕"
+            : ["난방", "급탕", "밸브", "배관", "펌프", "자동제어", "교육", "기타"].includes(item.category)
+              ? item.category : "기타",
+          content: item.content,
+          channel: item.channel || "",
+          urgent: item.urgent,
+          status: item.status,
+          receivedAt: item.receivedAt || new Date().toISOString(),
+          processedAt: item.status === "답변 완료" ? (item.processedAt || "") : ""
+        }));
+      }
+
+      function formatDateTime(value) {
+        if (!value) return "기록 없음";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "기록 없음";
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", hour12: false
+        }).format(date);
+      }
+
+      let inquiries = [];
+      let loading = true;
+      let loadError = "";
+      const pendingInquiries = new Set();
+      const headers = { apikey: SUPABASE_KEY, "Content-Type": "application/json" };
+      async function request(url = TABLE_URL, options = {}) {
+        const response = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+        const body = response.status === 204 ? null : await response.text();
+        if (!response.ok) throw new Error(body || `${response.status} ${response.statusText}`);
+        return body ? JSON.parse(body) : null;
+      }
+      async function writeInquiry(method, id, body) {
+        const url = id === null ? TABLE_URL : `${TABLE_URL}?id=eq.${encodeURIComponent(id)}`;
+        const rows = await request(url, {
+          method,
+          headers: { Prefer: "return=representation" },
+          body: body === undefined ? undefined : JSON.stringify(body)
+        });
+        const saved = rows?.[0];
+        if (!saved || saved.id == null) throw new Error("문의 변경을 확인할 수 없습니다. 권한 또는 문의 목록을 확인해 주세요.");
+        return saved;
+      }
+      function dbRow(item) {
+        return {
+          customerName: item.customerName, contact: item.contact, district: item.district,
+          category: item.category, content: item.content, channel: item.channel || "",
+          urgent: item.urgent, status: item.status, receivedAt: item.receivedAt,
+          processedAt: item.processedAt || null
+        };
+      }
+      async function loadFromSupabase() {
+        loading = true;
+        loadError = "";
+        retryConnection.hidden = true;
+        submitButton.disabled = true;
+        connectionStatus.textContent = "Supabase에 연결 중입니다.";
+        render();
+        try {
+          const rows = await request(`${TABLE_URL}?select=id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt&order=id.desc`);
+          inquiries = normalize(rows);
+          connectionStatus.textContent = "Supabase에 연결되었습니다. 가상 데이터만 입력해 주세요.";
+          submitButton.disabled = false;
+        } catch (error) {
+          console.error("Supabase 문의를 불러오지 못했습니다.", error);
+          loadError = `데이터베이스 연결 오류: ${error.message}`;
+          connectionStatus.textContent = loadError;
+          retryConnection.hidden = false;
+        } finally {
+          loading = false;
+          render();
+        }
+      }
+
+      function makeElement(tag, className, text) {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      }
+
+      function render() {
+        listElement.replaceChildren();
+
+        if (loading || loadError) {
+          countElement.textContent = loading ? "불러오는 중" : "연결 오류";
+          listElement.append(makeElement("p", "empty-state", loading ? "문의 목록을 불러오고 있습니다." : "다시 연결 버튼으로 문의 목록을 불러올 수 있습니다."));
+          return;
+        }
+
+        if (inquiries.length === 0) {
+          countElement.textContent = "문의 0건";
+          const empty = makeElement("div", "empty-state");
+          empty.append(makeElement("div", "empty-icon", "✓"));
+          empty.append(makeElement("p", "", "문의가 없습니다. 새 문의를 등록해 시작하세요."));
+          listElement.append(empty);
+          return;
+        }
+
+        const selectedCategory = categoryFilter.value;
+        const filteredInquiries = selectedCategory === "전체"
+          ? inquiries
+          : inquiries.filter((inquiry) => inquiry.category === selectedCategory);
+        countElement.textContent = `문의 ${filteredInquiries.length}건`;
+        if (filteredInquiries.length === 0) {
+          const empty = makeElement("div", "empty-state");
+          empty.append(makeElement("div", "empty-icon", "⌕"));
+          empty.append(makeElement("p", "", `‘${selectedCategory}’ 분류의 문의가 없습니다.`));
+          listElement.append(empty);
+          return;
+        }
+
+        const orderedInquiries = [...filteredInquiries].sort((a, b) => Number(b.urgent) - Number(a.urgent));
+        orderedInquiries.forEach((inquiry) => {
+          const item = makeElement("article", "inquiry-item");
+          const main = makeElement("div", "inquiry-main");
+          const topline = makeElement("div", "inquiry-topline");
+          topline.append(makeElement("span", "customer-name", inquiry.customerName));
+          topline.append(makeElement("span", "channel-tag", inquiry.district));
+          topline.append(makeElement("span", "channel-tag", inquiry.category));
+          if (inquiry.urgent) topline.append(makeElement("span", "urgent-tag", "긴급"));
+          main.append(topline);
+          main.append(makeElement("p", "contact-line", `연락처 · ${inquiry.contact}`));
+          main.append(makeElement("p", "inquiry-content", inquiry.content));
+          const times = makeElement("div", "inquiry-times");
+          const receivedTime = makeElement("span", "inquiry-time");
+          receivedTime.append(makeElement("strong", "", "접수 "));
+          receivedTime.append(document.createTextNode(formatDateTime(inquiry.receivedAt)));
+          const processedTime = makeElement("span", "inquiry-time");
+          processedTime.append(makeElement("strong", "", "처리 "));
+          processedTime.append(document.createTextNode(inquiry.processedAt ? formatDateTime(inquiry.processedAt) : "미처리"));
+          times.append(receivedTime, processedTime);
+          main.append(times);
+
+          const actions = makeElement("div", "inquiry-actions");
+          const statusLabel = makeElement("label", "sr-only", `${inquiry.customerName} 문의 처리 상태`);
+          const statusSelect = makeElement("select", "status-select");
+          statusSelect.disabled = pendingInquiries.has(inquiry.id);
+          statusSelect.setAttribute("aria-label", `${inquiry.customerName} 문의 처리 상태`);
+          STATUS_OPTIONS.forEach((status) => {
+            const option = makeElement("option", "", status);
+            option.value = status;
+            option.selected = inquiry.status === status;
+            statusSelect.append(option);
+          });
+          statusSelect.addEventListener("change", async () => {
+            if (pendingInquiries.has(inquiry.id)) return;
+            const status = statusSelect.value;
+            const processedAt = status === "답변 완료" ? new Date().toISOString() : null;
+            pendingInquiries.add(inquiry.id);
+            statusSelect.disabled = true;
+            deleteButton.disabled = true;
+            try {
+              const saved = await writeInquiry("PATCH", inquiry.id, { status, processedAt });
+              inquiry.status = saved.status;
+              inquiry.processedAt = saved.processedAt;
+            } catch (error) {
+              window.alert(`상태를 저장하지 못했습니다: ${error.message}`);
+            } finally {
+              pendingInquiries.delete(inquiry.id);
+              render();
+            }
+          });
+          statusLabel.htmlFor = `status-${inquiry.id}`;
+          statusSelect.id = `status-${inquiry.id}`;
+          actions.append(statusLabel, statusSelect);
+
+          const deleteButton = makeElement("button", "delete-button", "삭제");
+          deleteButton.type = "button";
+          deleteButton.disabled = pendingInquiries.has(inquiry.id);
+          deleteButton.setAttribute("aria-label", `${inquiry.customerName} 문의 삭제`);
+          deleteButton.addEventListener("click", async () => {
+            if (pendingInquiries.has(inquiry.id)) return;
+            if (!window.confirm(`${inquiry.customerName}님의 문의를 삭제할까요?`)) return;
+            pendingInquiries.add(inquiry.id);
+            statusSelect.disabled = true;
+            deleteButton.disabled = true;
+            try {
+              await writeInquiry("DELETE", inquiry.id);
+              inquiries = inquiries.filter((entry) => entry.id !== inquiry.id);
+            } catch (error) {
+              window.alert(`삭제하지 못했습니다: ${error.message}`);
+            } finally {
+              pendingInquiries.delete(inquiry.id);
+              render();
+            }
+          });
+          actions.append(deleteButton);
+          item.append(main, actions);
+          listElement.append(item);
+        });
+      }
+
+      categoryFilter.addEventListener("change", render);
+      retryConnection.addEventListener("click", loadFromSupabase);
+
+      formElement.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (submitButton.disabled) return;
+        const formData = new FormData(formElement);
+        const receivedDate = String(formData.get("receivedDate") || "");
+        const receivedHour = String(formData.get("receivedHour") || "");
+        const receivedMinute = String(formData.get("receivedMinute") || "");
+        const hasReceivedTime = receivedDate || receivedHour || receivedMinute;
+        if (hasReceivedTime && !(receivedDate && receivedHour && receivedMinute)) {
+          window.alert("접수 날짜와 시, 분을 모두 선택하거나 모두 비워 주세요.");
+          return;
+        }
+        const inquiry = {
+          customerName: String(formData.get("customerName")).trim(),
+          contact: String(formData.get("contact")).trim(),
+          district: String(formData.get("district")),
+          category: String(formData.get("category")),
+          content: String(formData.get("content")).trim(),
+          urgent: formData.has("urgent"),
+          status: "미처리",
+          receivedAt: hasReceivedTime
+            ? new Date(`${receivedDate}T${receivedHour}:${receivedMinute}`).toISOString()
+            : new Date().toISOString(),
+          processedAt: ""
+        };
+        if (!inquiry.customerName || !inquiry.contact || !inquiry.district || !inquiry.content) return;
+        submitButton.disabled = true;
+        try {
+          const saved = await writeInquiry("POST", null, dbRow(inquiry));
+          inquiries = [...normalize([saved]), ...inquiries];
+          render();
+          formElement.reset();
+          document.getElementById("customer-name").focus();
+        } catch (error) {
+          window.alert(`문의 등록에 실패했습니다: ${error.message}`);
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      showView("register");
+      loadFromSupabase();
+    })();
+  </script>
+</body>
+</html>
