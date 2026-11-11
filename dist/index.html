@@ -213,6 +213,10 @@
                 <input class="control" id="customer-name" name="customerName" type="text" maxlength="60" placeholder="예: 김민지" required>
               </div>
               <div class="field">
+                <label class="field-label" for="received-by">접수자</label>
+                <input class="control" id="received-by" name="receivedBy" type="text" maxlength="60" placeholder="문의를 받은 직원 이름">
+              </div>
+              <div class="field">
                 <label class="field-label" for="customer-contact">연락처</label>
                 <input class="control" id="customer-contact" name="contact" type="tel" maxlength="40" placeholder="예: 010-1234-5678" required>
               </div>
@@ -611,6 +615,7 @@
         return items.filter((item) => validInquiry(item) && item.id != null).map((item) => ({
           id: String(item.id),
           customerName: item.customerName,
+          receivedBy: item.received_by || "",
           contact: item.contact || "연락처 미등록",
           district: item.district || "지구 미지정",
           category: item.category === "온수" ? "급탕"
@@ -644,7 +649,7 @@
         let query = supabase.from("inquiries");
         if (method === "POST") query = query.insert(body);
         else if (method === "PATCH") query = query.update(body).eq("id", id);
-        const { data, error } = await query.select("id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt").single();
+        const { data, error } = await query.select("id,customerName,received_by,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt").single();
         if (error) throw error;
         if (!data || data.id == null) throw new Error("문의 변경을 확인할 수 없습니다. 권한 또는 문의 목록을 확인해 주세요.");
         return data;
@@ -652,6 +657,7 @@
       function dbRow(item) {
         return {
           customerName: item.customerName, contact: item.contact, district: item.district,
+          received_by: item.receivedBy || null,
           category: item.category, content: item.content, channel: item.channel || "",
           urgent: item.urgent, status: item.status, receivedAt: item.receivedAt,
           processedAt: item.processedAt || null, deletedAt: item.deletedAt || null
@@ -670,7 +676,7 @@
         render();
         try {
           const { data: rows, error } = await supabase.from("inquiries")
-            .select("id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt")
+            .select("id,customerName,received_by,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt")
             .order("id", { ascending: false });
           if (error) throw error;
           if (requestId !== inquiryLoadId || requestedEpoch !== sessionEpoch || currentSession?.user?.id !== requestedUserId) return;
@@ -747,6 +753,7 @@
           if (inquiry.urgent) topline.append(makeElement("span", "urgent-tag", "긴급"));
           main.append(topline);
           main.append(makeElement("p", "contact-line", `연락처 · ${inquiry.contact}`));
+          main.append(makeElement("p", "contact-line", `접수자 · ${inquiry.receivedBy || "미기재"}`));
           main.append(makeElement("p", "inquiry-content", inquiry.content));
           const times = makeElement("div", "inquiry-times");
           const receivedTime = makeElement("span", "inquiry-time");
@@ -849,6 +856,7 @@
         }
         const inquiry = {
           customerName: String(formData.get("customerName")).trim(),
+          receivedBy: String(formData.get("receivedBy")).trim(),
           contact: String(formData.get("contact")).trim(),
           district: String(formData.get("district")),
           category: String(formData.get("category")),
