@@ -34,6 +34,11 @@
     }
     .page { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 52px 0 72px; }
     .masthead { display: flex; align-items: center; gap: 14px; margin-bottom: 38px; }
+    .auth-actions { display: flex; align-items: center; gap: 9px; margin-left: auto; }
+    .auth-button { min-height: 42px; padding: 9px 16px; border: 1px solid #e8e4f0; border-radius: 12px; color: #5e5870; background: rgba(255,255,255,.9); font-size: 13px; font-weight: 750; transition: transform .16s, box-shadow .16s, border-color .16s; }
+    .auth-button:hover { transform: translateY(-1px); border-color: #c9b9ee; box-shadow: 0 6px 16px rgba(114,84,214,.1); }
+    .auth-button.primary { border-color: transparent; color: #fff; background: linear-gradient(135deg, #8269df, #674bc6); box-shadow: 0 6px 15px #7254d626; }
+    .auth-email-display { max-width: 220px; overflow: hidden; color: #686476; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
     .brand-logo { display: block; width: 180px; max-width: 100%; height: auto; object-fit: contain; }
     .brand-name { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
     .brand-caption { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
@@ -47,8 +52,8 @@
     .menu-button { min-height: 42px; padding: 9px 12px; border: 0; border-radius: 10px; color: #716d7b; background: transparent; text-align: left; font-size: 13px; font-weight: 750; }
     .menu-button[aria-current="page"] { color: var(--purple-dark); background: var(--lavender); }
     .view-panel[hidden] { display: none; }
-    .filter-row { display: flex; align-items: center; gap: 10px; margin: -5px 0 15px; }
-    .filter-row .control { max-width: 240px; }
+    .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -5px 0 15px; }
+    .filter-row .control { flex: 0 1 220px; max-width: 240px; }
     .filter-hint { color: var(--muted); font-size: 12px; }
     .frame-card { position: relative; isolation: isolate; min-width: 0; padding: 1px; border-radius: 20px; }
     .frame-card::before {
@@ -104,10 +109,27 @@
     .empty-icon { display: grid; width: 48px; height: 48px; margin: 0 auto 14px; place-items: center; border-radius: 16px; color: var(--purple); background: var(--lavender); font-size: 22px; }
     .empty-state p { margin: 0; font-size: 14px; line-height: 1.7; }
     .storage-note { margin: 16px 2px 0; color: #8e8a98; font-size: 11px; line-height: 1.5; }
+    .auth-overlay[hidden] { display: none; }
+    .auth-dialog [hidden] { display: none !important; }
+    .auth-overlay { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 22px; background: rgba(31, 29, 42, .48); backdrop-filter: blur(5px); }
+    .auth-dialog { position: relative; width: min(100%, 440px); max-height: calc(100vh - 44px); overflow-y: auto; padding: 34px; border: 1px solid rgba(255,255,255,.86); border-radius: 24px; background: #fffdfd; box-shadow: 0 24px 80px rgba(37,31,57,.25); }
+    .auth-dialog::before { position: absolute; top: 0; left: 34px; right: 34px; height: 4px; border-radius: 0 0 999px 999px; content: ""; background: linear-gradient(90deg, #769b83, #c86d69, #d6bb83, #8aa795); }
+    .auth-floral { display: block; width: 104px; height: 88px; margin: 0 auto 7px; object-fit: contain; opacity: .94; }
+    .auth-close { position: absolute; top: 15px; right: 15px; display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid #eeecf2; border-radius: 12px; color: #716d7b; background: #fff; font-size: 22px; line-height: 1; }
+    .auth-kicker { margin: 4px 0 8px; color: #718d79; font-size: 11px; font-weight: 850; letter-spacing: .13em; }
+    .auth-title { margin: 0; color: var(--ink); font-size: 25px; letter-spacing: -.045em; }
+    .auth-copy { margin: 8px 36px 24px 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .auth-dialog .field { margin-bottom: 16px; }
+    .auth-dialog .field-label { font-size: 13px; }
+    .auth-submit { margin-top: 3px; }
+    .auth-message { min-height: 21px; margin: 13px 0 0; color: #795346; font-size: 12px; line-height: 1.6; }
+    .auth-switch { margin: 17px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+    .auth-switch button { padding: 3px 5px; border: 0; color: var(--purple-dark); background: transparent; font-size: inherit; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     @media (max-width: 760px) {
       .page { width: min(100% - 32px, 560px); padding-top: 30px; }
-      .masthead { margin-bottom: 29px; }
+      .masthead { flex-wrap: wrap; margin-bottom: 29px; }
+      .auth-actions { margin-left: auto; }
       .workspace { grid-template-columns: 1fr; gap: 14px; }
       .side-menu { position: static; display: flex; padding: 6px; }
       .menu-button { flex: 1; text-align: center; }
@@ -118,6 +140,13 @@
     }
     @media (max-width: 480px) {
       .page { width: calc(100% - 24px); padding-top: 22px; }
+      .brand-logo { width: 145px; }
+      .brand-name { font-size: 13px; }
+      .auth-actions { width: 100%; margin-left: 0; }
+      .auth-button { flex: 1; }
+      .auth-dialog { padding: 29px 21px 23px; border-radius: 20px; }
+      .auth-dialog::before { left: 21px; right: 21px; }
+      .auth-floral { width: 88px; height: 76px; }
       .intro-copy { font-size: 14px; }
       .card-inner, .list-card .card-inner { padding-right: 17px; padding-left: 17px; }
       .form-row { grid-template-columns: 1fr; gap: 0; }
@@ -142,6 +171,13 @@
         <p class="brand-name">안산도시개발(주) 고객지원팀 설비과</p>
         <p class="brand-caption">고객 문의를 한곳에서 관리해요</p>
       </div>
+      <div class="auth-actions" aria-label="계정 메뉴">
+        <button class="auth-button" id="open-login" type="button">로그인</button>
+        <button class="auth-button primary" id="open-signup" type="button">회원가입</button>
+        <span class="auth-email-display" id="auth-email-display" hidden></span>
+        <button class="auth-button" id="auth-logout" type="button" hidden>로그아웃</button>
+        <span class="sr-only" id="auth-global-message" role="status" aria-live="polite"></span>
+      </div>
     </header>
 
     <main>
@@ -149,6 +185,8 @@
         <nav class="side-menu" aria-label="주요 메뉴">
           <button class="menu-button" type="button" data-view="register" aria-current="page">문의 등록</button>
           <button class="menu-button" type="button" data-view="list" aria-current="false">문의 목록</button>
+          <button class="menu-button" type="button" data-view="processed" aria-current="false">처리함</button>
+          <button class="menu-button" type="button" data-view="trash" aria-current="false">삭제함</button>
         </nav>
         <div class="workspace-content">
           <div class="intro">
@@ -237,7 +275,7 @@
             <div class="section-heading">
               <div>
                 <h2 class="section-title" id="list-title">문의 목록</h2>
-                <p class="section-description">담당 문의를 확인하고 처리 상태를 업데이트하세요.</p>
+                <p class="section-description" id="list-description">새 문의와 진행 중인 문의를 확인하세요.</p>
               </div>
               <span class="count-badge" id="inquiry-count" aria-live="polite">문의 0건</span>
             </div>
@@ -254,7 +292,11 @@
                 <option value="교육">교육</option>
                 <option value="기타">기타</option>
               </select>
-              <span class="filter-hint" id="filter-hint">분류를 선택해 해당 문의만 확인하세요.</span>
+              <label class="sr-only" for="status-filter">상태 필터</label>
+              <select class="control" id="status-filter">
+                <option value="전체">전체 상태</option>
+              </select>
+              <span class="filter-hint" id="filter-hint">분류와 상태를 선택해 문의를 확인하세요.</span>
             </div>
             <div class="inquiry-list" id="inquiry-list" aria-live="polite"></div>
             <div class="storage-note">문의는 Supabase에 저장됩니다. 가상 데이터만 입력해 주세요.</div>
@@ -267,13 +309,40 @@
     </main>
   </div>
 
+  <div class="auth-overlay" id="auth-overlay" hidden>
+    <section class="auth-dialog" id="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-describedby="auth-copy">
+      <button class="auth-close" id="auth-close" type="button" aria-label="닫기">×</button>
+      <img class="auth-floral" src="assets/aquarell-wreath.jfif" alt="" aria-hidden="true">
+      <p class="auth-kicker">CUSTOMER CARE</p>
+      <h2 class="auth-title" id="auth-title">로그인</h2>
+      <p class="auth-copy" id="auth-copy">고객지원팀 계정으로 문의 관리 화면을 이용하세요.</p>
+      <form id="auth-form" novalidate>
+        <div class="field">
+          <label class="field-label" for="auth-email">이메일</label>
+          <input class="control" id="auth-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="auth-password">비밀번호</label>
+          <input class="control" id="auth-password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="field" id="auth-confirm-field" hidden>
+          <label class="field-label" for="auth-confirm">비밀번호 확인</label>
+          <input class="control" id="auth-confirm" name="passwordConfirm" type="password" autocomplete="new-password">
+        </div>
+        <button class="primary-button auth-submit" id="auth-submit" type="submit">로그인</button>
+        <p class="auth-message" id="auth-message" role="status" aria-live="polite"></p>
+      </form>
+      <p class="auth-switch" id="auth-switch"></p>
+    </section>
+  </div>
+
+  <script src="assets/supabase-js-2.119.0.js"></script>
+  <script src="supabase-config.js"></script>
   <script>
     (() => {
       "use strict";
 
-      const SUPABASE_URL = "https://ssiqydwuwsjssgreqfgz.supabase.co";
-      const SUPABASE_KEY = "sb_publishable_cSikUgnX6vpK_aMcXL7B-w_72-Fweqo";
-      const TABLE_URL = `${SUPABASE_URL}/rest/v1/inquiries`;
+      const supabase = window.supabaseClient;
       const STATUS_OPTIONS = ["미처리", "처리 중", "답변 완료"];
       const listElement = document.getElementById("inquiry-list");
       const countElement = document.getElementById("inquiry-count");
@@ -283,12 +352,187 @@
       const retryConnection = document.getElementById("retry-connection");
       const contactInput = document.getElementById("customer-contact");
       const categoryFilter = document.getElementById("category-filter");
+      const statusFilter = document.getElementById("status-filter");
       const pageTitle = document.getElementById("page-title");
       const pageDescription = document.getElementById("page-description");
       const viewPanels = [...document.querySelectorAll("[data-view-panel]")];
       const viewButtons = [...document.querySelectorAll("[data-view]")];
       const hourSelect = document.getElementById("received-hour");
       const minuteSelect = document.getElementById("received-minute");
+      const authOverlay = document.getElementById("auth-overlay");
+      const authDialog = document.getElementById("auth-dialog");
+      const authForm = document.getElementById("auth-form");
+      const authTitle = document.getElementById("auth-title");
+      const authPassword = document.getElementById("auth-password");
+      const authConfirm = document.getElementById("auth-confirm");
+      const authConfirmField = document.getElementById("auth-confirm-field");
+      const authSubmit = document.getElementById("auth-submit");
+      const authMessage = document.getElementById("auth-message");
+      const authSwitch = document.getElementById("auth-switch");
+      const authEmailDisplay = document.getElementById("auth-email-display");
+      const authLogout = document.getElementById("auth-logout");
+      const authGlobalMessage = document.getElementById("auth-global-message");
+      let authMode = "login";
+      let authReturnFocus = null;
+      let currentSession = null;
+      let activeView = "register";
+      let authInitialized = false;
+      let sessionEpoch = 0;
+      let inquiryLoadId = 0;
+      const authTriggerButtons = [document.getElementById("open-login"), document.getElementById("open-signup")];
+
+      function showSignedInUser(session) {
+        const previousUserId = currentSession?.user?.id || null;
+        const nextUserId = session?.user?.id || null;
+        const identityChanged = previousUserId !== nextUserId;
+        if (identityChanged) {
+          sessionEpoch += 1;
+          inquiryLoadId += 1;
+          inquiries = [];
+          loadError = "";
+          pendingInquiries?.clear();
+        }
+        currentSession = session;
+        const user = session?.user;
+        authTriggerButtons.forEach((button) => { button.hidden = Boolean(user); });
+        authEmailDisplay.hidden = !user;
+        authLogout.hidden = !user;
+        authEmailDisplay.textContent = user?.email || "";
+        formElement.querySelectorAll("input, textarea, select").forEach((control) => { control.disabled = !user; });
+        formElement.querySelectorAll("button[type=submit]").forEach((button) => { button.disabled = !user; });
+        if (user && !authOverlay.hidden) closeAuth();
+        if (!authInitialized) {
+          loading = true;
+          connectionStatus.textContent = "로그인 상태를 확인하고 있습니다.";
+        } else if (!user) {
+          loading = false;
+          connectionStatus.textContent = "로그인 후 문의를 확인할 수 있습니다.";
+          submitButton.disabled = true;
+          retryConnection.hidden = true;
+        } else if (identityChanged) {
+          loading = true;
+          connectionStatus.textContent = "문의 목록을 불러오고 있습니다.";
+          submitButton.disabled = true;
+        }
+        render();
+      }
+
+      authLogout.addEventListener("click", async () => {
+        authLogout.disabled = true;
+        authGlobalMessage.textContent = "로그아웃 중입니다.";
+        const { error } = await supabase.auth.signOut({ scope: "local" });
+        if (error) {
+          authGlobalMessage.textContent = `로그아웃 실패: ${error.message}`;
+          connectionStatus.textContent = `로그아웃 실패: ${error.message}`;
+          authLogout.disabled = false;
+          return;
+        }
+        authGlobalMessage.textContent = "로그아웃했습니다.";
+      });
+
+      async function submitAuthForm(event) {
+        event.preventDefault();
+        if (authSubmit.disabled) return;
+        const email = document.getElementById("auth-email");
+        if (!email.validity.valid) { email.reportValidity(); return; }
+        if (!authPassword.value) { authPassword.reportValidity(); return; }
+        if (authMode === "signup" && !authConfirm.value) { authConfirm.reportValidity(); return; }
+        if (authMode === "signup" && authPassword.value !== authConfirm.value) {
+          authConfirm.setCustomValidity("비밀번호가 일치하지 않습니다.");
+          authConfirm.reportValidity();
+          authConfirm.addEventListener("input", () => authConfirm.setCustomValidity(""), { once: true });
+          return;
+        }
+
+        authSubmit.disabled = true;
+        authMessage.textContent = authMode === "signup" ? "회원가입 중입니다." : "로그인 중입니다.";
+        try {
+          if (authMode === "signup") {
+            const { data, error } = await supabase.auth.signUp({ email: email.value.trim(), password: authPassword.value });
+            if (error) throw error;
+            if (data.session) {
+              authMessage.textContent = "로그인되었습니다.";
+              return;
+            }
+            authMessage.textContent = "회원가입 응답에 로그인 세션이 없습니다. 현재 로그인되지 않았습니다.";
+            return;
+          }
+
+          const { data, error } = await supabase.auth.signInWithPassword({ email: email.value.trim(), password: authPassword.value });
+          if (error) throw error;
+          if (!data.session) throw new Error("로그인 응답에 세션이 없어 로그인할 수 없습니다.");
+          authMessage.textContent = "로그인되었습니다.";
+        } catch (error) {
+          authMessage.textContent = error.message || "인증 요청에 실패했습니다.";
+        } finally {
+          authSubmit.disabled = false;
+        }
+      }
+
+      authForm.addEventListener("submit", submitAuthForm);
+
+      function renderAuthMode(mode) {
+        authMode = mode;
+        const signup = mode === "signup";
+        authTitle.textContent = signup ? "회원가입" : "로그인";
+        authSubmit.textContent = signup ? "회원가입" : "로그인";
+        authConfirmField.hidden = !signup;
+        authConfirm.required = signup;
+        authConfirm.setCustomValidity("");
+        authPassword.autocomplete = signup ? "new-password" : "current-password";
+        authMessage.textContent = "";
+        authSwitch.innerHTML = signup
+          ? '이미 계정이 있나요? <button type="button" data-auth-switch="login">로그인</button>'
+          : '처음 방문하셨나요? <button type="button" data-auth-switch="signup">회원가입</button>';
+      }
+
+      function openAuth(mode, opener) {
+        authReturnFocus = opener;
+        authForm.reset();
+        renderAuthMode(mode);
+        authOverlay.hidden = false;
+        document.body.style.overflow = "hidden";
+        document.getElementById("auth-email").focus();
+      }
+
+      function closeAuth() {
+        if (authOverlay.hidden) return;
+        authOverlay.hidden = true;
+        document.body.style.overflow = "";
+        authMessage.textContent = "";
+        if (authReturnFocus) authReturnFocus.focus();
+      }
+
+      document.getElementById("open-login").addEventListener("click", (event) => openAuth("login", event.currentTarget));
+      document.getElementById("open-signup").addEventListener("click", (event) => openAuth("signup", event.currentTarget));
+      document.getElementById("auth-close").addEventListener("click", closeAuth);
+      authOverlay.addEventListener("click", (event) => { if (event.target === authOverlay) closeAuth(); });
+      authSwitch.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-auth-switch]");
+        if (!button) return;
+        authForm.reset();
+        renderAuthMode(button.dataset.authSwitch);
+        document.getElementById("auth-email").focus();
+      });
+      authDialog.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeAuth();
+          return;
+        }
+        if (event.key !== "Tab") return;
+        const focusable = [...authDialog.querySelectorAll('button:not([disabled]), input:not([disabled]):not([type="hidden"]), [href], select, textarea, [tabindex]:not([tabindex="-1"])')]
+          .filter((element) => !element.closest("[hidden]") && element.getClientRects().length);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
 
       const hourPlaceholder = new Option("시", "");
       hourSelect.append(hourPlaceholder);
@@ -321,15 +565,34 @@
       });
 
       function showView(view) {
-        viewPanels.forEach((panel) => { panel.hidden = panel.dataset.viewPanel !== view; });
+        activeView = view;
+        const panelView = view === "register" ? "register" : "list";
+        viewPanels.forEach((panel) => { panel.hidden = panel.dataset.viewPanel !== panelView; });
         viewButtons.forEach((button) => {
           button.setAttribute("aria-current", button.dataset.view === view ? "page" : "false");
         });
-        pageTitle.textContent = view === "register" ? "문의 등록" : "문의 목록";
-        pageDescription.textContent = view === "register"
-          ? "접수 내용을 입력해 문의를 등록해 주세요."
-          : "분류를 검색해 문의를 확인하고 처리 상태를 관리하세요.";
-        if (view === "list") render();
+        const headings = {
+          register: ["문의 등록", "접수 내용을 입력해 문의를 등록해 주세요."],
+          list: ["문의 목록", "새 문의와 진행 중인 문의를 확인하세요."],
+          processed: ["처리함", "답변 완료된 문의를 확인하세요."],
+          trash: ["삭제함", "삭제한 문의를 확인할 수 있습니다."]
+        };
+        [pageTitle.textContent, pageDescription.textContent] = headings[view];
+        updateStatusFilterOptions();
+        if (view !== "register") {
+          document.getElementById("list-title").textContent = headings[view][0];
+          document.getElementById("list-description").textContent = headings[view][1];
+        }
+        if (view !== "register") render();
+      }
+
+      function updateStatusFilterOptions() {
+        const statuses = activeView === "list"
+          ? STATUS_OPTIONS.filter((status) => status !== "답변 완료")
+          : activeView === "processed" ? ["답변 완료"] : STATUS_OPTIONS;
+        statusFilter.replaceChildren(new Option("전체 상태", "전체"));
+        statuses.forEach((status) => statusFilter.append(new Option(status, status)));
+        statusFilter.value = "전체";
       }
 
       viewButtons.forEach((button) => {
@@ -358,7 +621,8 @@
           urgent: item.urgent,
           status: item.status,
           receivedAt: item.receivedAt || new Date().toISOString(),
-          processedAt: item.status === "답변 완료" ? (item.processedAt || "") : ""
+          processedAt: item.status === "답변 완료" ? (item.processedAt || "") : "",
+          deletedAt: item.deletedAt || null
         }));
       }
 
@@ -376,33 +640,28 @@
       let loading = true;
       let loadError = "";
       const pendingInquiries = new Set();
-      const headers = { apikey: SUPABASE_KEY, "Content-Type": "application/json" };
-      async function request(url = TABLE_URL, options = {}) {
-        const response = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
-        const body = response.status === 204 ? null : await response.text();
-        if (!response.ok) throw new Error(body || `${response.status} ${response.statusText}`);
-        return body ? JSON.parse(body) : null;
-      }
       async function writeInquiry(method, id, body) {
-        const url = id === null ? TABLE_URL : `${TABLE_URL}?id=eq.${encodeURIComponent(id)}`;
-        const rows = await request(url, {
-          method,
-          headers: { Prefer: "return=representation" },
-          body: body === undefined ? undefined : JSON.stringify(body)
-        });
-        const saved = rows?.[0];
-        if (!saved || saved.id == null) throw new Error("문의 변경을 확인할 수 없습니다. 권한 또는 문의 목록을 확인해 주세요.");
-        return saved;
+        let query = supabase.from("inquiries");
+        if (method === "POST") query = query.insert(body);
+        else if (method === "PATCH") query = query.update(body).eq("id", id);
+        const { data, error } = await query.select("id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt").single();
+        if (error) throw error;
+        if (!data || data.id == null) throw new Error("문의 변경을 확인할 수 없습니다. 권한 또는 문의 목록을 확인해 주세요.");
+        return data;
       }
       function dbRow(item) {
         return {
           customerName: item.customerName, contact: item.contact, district: item.district,
           category: item.category, content: item.content, channel: item.channel || "",
           urgent: item.urgent, status: item.status, receivedAt: item.receivedAt,
-          processedAt: item.processedAt || null
+          processedAt: item.processedAt || null, deletedAt: item.deletedAt || null
         };
       }
       async function loadFromSupabase() {
+        if (!currentSession) return;
+        const requestedUserId = currentSession.user.id;
+        const requestedEpoch = sessionEpoch;
+        const requestId = ++inquiryLoadId;
         loading = true;
         loadError = "";
         retryConnection.hidden = true;
@@ -410,18 +669,25 @@
         connectionStatus.textContent = "Supabase에 연결 중입니다.";
         render();
         try {
-          const rows = await request(`${TABLE_URL}?select=id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt&order=id.desc`);
+          const { data: rows, error } = await supabase.from("inquiries")
+            .select("id,customerName,contact,district,category,content,channel,urgent,status,receivedAt,processedAt,deletedAt")
+            .order("id", { ascending: false });
+          if (error) throw error;
+          if (requestId !== inquiryLoadId || requestedEpoch !== sessionEpoch || currentSession?.user?.id !== requestedUserId) return;
           inquiries = normalize(rows);
           connectionStatus.textContent = "Supabase에 연결되었습니다. 가상 데이터만 입력해 주세요.";
           submitButton.disabled = false;
         } catch (error) {
+          if (requestId !== inquiryLoadId || requestedEpoch !== sessionEpoch || currentSession?.user?.id !== requestedUserId) return;
           console.error("Supabase 문의를 불러오지 못했습니다.", error);
           loadError = `데이터베이스 연결 오류: ${error.message}`;
           connectionStatus.textContent = loadError;
           retryConnection.hidden = false;
         } finally {
-          loading = false;
-          render();
+          if (requestId === inquiryLoadId && requestedEpoch === sessionEpoch && currentSession?.user?.id === requestedUserId) {
+            loading = false;
+            render();
+          }
         }
       }
 
@@ -436,29 +702,36 @@
         listElement.replaceChildren();
 
         if (loading || loadError) {
-          countElement.textContent = loading ? "불러오는 중" : "연결 오류";
-          listElement.append(makeElement("p", "empty-state", loading ? "문의 목록을 불러오고 있습니다." : "다시 연결 버튼으로 문의 목록을 불러올 수 있습니다."));
-          return;
-        }
-
-        if (inquiries.length === 0) {
-          countElement.textContent = "문의 0건";
-          const empty = makeElement("div", "empty-state");
-          empty.append(makeElement("div", "empty-icon", "✓"));
-          empty.append(makeElement("p", "", "문의가 없습니다. 새 문의를 등록해 시작하세요."));
-          listElement.append(empty);
+          countElement.textContent = !authInitialized ? "상태 확인 중" : loading ? "불러오는 중" : "연결 오류";
+          const message = !authInitialized ? "로그인 상태를 확인하고 있습니다." : loading ? "문의 목록을 불러오고 있습니다." : "다시 연결 버튼으로 문의 목록을 불러올 수 있습니다.";
+          listElement.append(makeElement("p", "empty-state", message));
           return;
         }
 
         const selectedCategory = categoryFilter.value;
-        const filteredInquiries = selectedCategory === "전체"
-          ? inquiries
-          : inquiries.filter((inquiry) => inquiry.category === selectedCategory);
+        const selectedStatus = statusFilter.value;
+        const viewInquiries = inquiries.filter((inquiry) => {
+          if (activeView === "processed") return !inquiry.deletedAt && inquiry.status === "답변 완료";
+          if (activeView === "trash") return Boolean(inquiry.deletedAt);
+          return !inquiry.deletedAt && inquiry.status !== "답변 완료";
+        });
+        const filteredInquiries = viewInquiries.filter((inquiry) =>
+          (selectedCategory === "전체" || inquiry.category === selectedCategory) &&
+          (selectedStatus === "전체" || inquiry.status === selectedStatus)
+        );
         countElement.textContent = `문의 ${filteredInquiries.length}건`;
         if (filteredInquiries.length === 0) {
           const empty = makeElement("div", "empty-state");
           empty.append(makeElement("div", "empty-icon", "⌕"));
-          empty.append(makeElement("p", "", `‘${selectedCategory}’ 분류의 문의가 없습니다.`));
+          const emptyMessages = {
+            list: "문의가 없습니다. 새 문의를 등록해 시작하세요.",
+            processed: "처리 완료된 문의가 없습니다.",
+            trash: "삭제된 문의가 없습니다."
+          };
+          const emptyMessage = selectedStatus !== "전체"
+            ? `‘${selectedStatus}’ 상태의 문의가 없습니다.`
+            : selectedCategory === "전체" ? emptyMessages[activeView] : `‘${selectedCategory}’ 분류의 문의가 없습니다.`;
+          empty.append(makeElement("p", "", emptyMessage));
           listElement.append(empty);
           return;
         }
@@ -483,12 +756,18 @@
           processedTime.append(makeElement("strong", "", "처리 "));
           processedTime.append(document.createTextNode(inquiry.processedAt ? formatDateTime(inquiry.processedAt) : "미처리"));
           times.append(receivedTime, processedTime);
+          if (inquiry.deletedAt) {
+            const deletedTime = makeElement("span", "inquiry-time");
+            deletedTime.append(makeElement("strong", "", "삭제 "));
+            deletedTime.append(document.createTextNode(formatDateTime(inquiry.deletedAt)));
+            times.append(deletedTime);
+          }
           main.append(times);
 
           const actions = makeElement("div", "inquiry-actions");
           const statusLabel = makeElement("label", "sr-only", `${inquiry.customerName} 문의 처리 상태`);
           const statusSelect = makeElement("select", "status-select");
-          statusSelect.disabled = pendingInquiries.has(inquiry.id);
+          statusSelect.disabled = activeView === "trash" || pendingInquiries.has(inquiry.id);
           statusSelect.setAttribute("aria-label", `${inquiry.customerName} 문의 처리 상태`);
           STATUS_OPTIONS.forEach((status) => {
             const option = makeElement("option", "", status);
@@ -497,54 +776,63 @@
             statusSelect.append(option);
           });
           statusSelect.addEventListener("change", async () => {
+            if (activeView === "trash") return;
             if (pendingInquiries.has(inquiry.id)) return;
             const status = statusSelect.value;
             const processedAt = status === "답변 완료" ? new Date().toISOString() : null;
+            const operationEpoch = sessionEpoch;
             pendingInquiries.add(inquiry.id);
             statusSelect.disabled = true;
-            deleteButton.disabled = true;
+            const deleteControl = actions.querySelector(".delete-button");
+            if (deleteControl) deleteControl.disabled = true;
             try {
               const saved = await writeInquiry("PATCH", inquiry.id, { status, processedAt });
+              if (operationEpoch !== sessionEpoch || !currentSession) return;
               inquiry.status = saved.status;
               inquiry.processedAt = saved.processedAt;
             } catch (error) {
               window.alert(`상태를 저장하지 못했습니다: ${error.message}`);
             } finally {
               pendingInquiries.delete(inquiry.id);
-              render();
+              if (operationEpoch === sessionEpoch && currentSession) render();
             }
           });
           statusLabel.htmlFor = `status-${inquiry.id}`;
           statusSelect.id = `status-${inquiry.id}`;
           actions.append(statusLabel, statusSelect);
 
-          const deleteButton = makeElement("button", "delete-button", "삭제");
-          deleteButton.type = "button";
-          deleteButton.disabled = pendingInquiries.has(inquiry.id);
-          deleteButton.setAttribute("aria-label", `${inquiry.customerName} 문의 삭제`);
-          deleteButton.addEventListener("click", async () => {
-            if (pendingInquiries.has(inquiry.id)) return;
-            if (!window.confirm(`${inquiry.customerName}님의 문의를 삭제할까요?`)) return;
-            pendingInquiries.add(inquiry.id);
-            statusSelect.disabled = true;
-            deleteButton.disabled = true;
-            try {
-              await writeInquiry("DELETE", inquiry.id);
-              inquiries = inquiries.filter((entry) => entry.id !== inquiry.id);
-            } catch (error) {
-              window.alert(`삭제하지 못했습니다: ${error.message}`);
-            } finally {
-              pendingInquiries.delete(inquiry.id);
-              render();
-            }
-          });
-          actions.append(deleteButton);
+          if (activeView !== "trash") {
+            const deleteButton = makeElement("button", "delete-button", "삭제");
+            deleteButton.type = "button";
+            deleteButton.disabled = pendingInquiries.has(inquiry.id);
+            deleteButton.setAttribute("aria-label", `${inquiry.customerName} 문의 삭제`);
+            deleteButton.addEventListener("click", async () => {
+              if (pendingInquiries.has(inquiry.id)) return;
+              if (!window.confirm(`${inquiry.customerName}님의 문의를 삭제함으로 이동할까요?`)) return;
+              const operationEpoch = sessionEpoch;
+              pendingInquiries.add(inquiry.id);
+              statusSelect.disabled = true;
+              deleteButton.disabled = true;
+              try {
+                const saved = await writeInquiry("PATCH", inquiry.id, { deletedAt: new Date().toISOString() });
+                if (operationEpoch !== sessionEpoch || !currentSession) return;
+                inquiry.deletedAt = saved.deletedAt;
+              } catch (error) {
+                window.alert(`삭제함으로 이동하지 못했습니다: ${error.message}`);
+              } finally {
+                pendingInquiries.delete(inquiry.id);
+                if (operationEpoch === sessionEpoch && currentSession) render();
+              }
+            });
+            actions.append(deleteButton);
+          }
           item.append(main, actions);
           listElement.append(item);
         });
       }
 
       categoryFilter.addEventListener("change", render);
+      statusFilter.addEventListener("change", render);
       retryConnection.addEventListener("click", loadFromSupabase);
 
       formElement.addEventListener("submit", async (event) => {
@@ -574,8 +862,10 @@
         };
         if (!inquiry.customerName || !inquiry.contact || !inquiry.district || !inquiry.content) return;
         submitButton.disabled = true;
+        const operationEpoch = sessionEpoch;
         try {
           const saved = await writeInquiry("POST", null, dbRow(inquiry));
+          if (operationEpoch !== sessionEpoch || !currentSession) return;
           inquiries = [...normalize([saved]), ...inquiries];
           render();
           formElement.reset();
@@ -583,12 +873,33 @@
         } catch (error) {
           window.alert(`문의 등록에 실패했습니다: ${error.message}`);
         } finally {
-          submitButton.disabled = false;
+          if (operationEpoch === sessionEpoch && currentSession) submitButton.disabled = false;
         }
       });
 
       showView("register");
-      loadFromSupabase();
+      connectionStatus.textContent = "로그인 상태를 확인하고 있습니다.";
+      render();
+      supabase.auth.onAuthStateChange((event, session) => {
+        const previousUserId = currentSession?.user?.id || null;
+        authInitialized = true;
+        showSignedInUser(session);
+        const nextUserId = session?.user?.id || null;
+        if (session && (previousUserId !== nextUserId || event === "INITIAL_SESSION")) {
+          window.setTimeout(() => loadFromSupabase(), 0);
+        }
+      });
+      supabase.auth.getSession().then(({ data, error }) => {
+        const previousUserId = currentSession?.user?.id || null;
+        authInitialized = true;
+        if (error) {
+          showSignedInUser(null);
+          connectionStatus.textContent = `인증 상태 확인 실패: ${error.message}`;
+          return;
+        }
+        showSignedInUser(data.session);
+        if (data.session && (previousUserId !== data.session.user.id || inquiries.length === 0)) loadFromSupabase();
+      });
     })();
   </script>
 </body>
